@@ -42,6 +42,9 @@ public:
 
     bool is_ready() const { return m_initialized && m_game_data_initialized; }
 
+    bool switch_reframework_context(ImGuiContext* plugin_context);
+    void restore_reframework_context();
+
     void run_imgui_frame(bool from_present);
 
     void on_frame_d3d11();
@@ -160,7 +163,8 @@ private:
     bool m_cursor_state_changed{true};
     bool m_ui_option_transparent{true};
     bool m_ui_passthrough{false};
-    
+    //add an imgui_context to store a reference to reframework's imgui context
+    ImGuiContext* m_reframework_context;
     ImVec2 m_last_window_pos{};
     ImVec2 m_last_window_size{};
 

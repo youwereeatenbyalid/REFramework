@@ -388,6 +388,19 @@ REFramework::~REFramework() {
     }
 }
 
+
+bool REFramework::switch_reframework_context(ImGuiContext* plugin_context) {
+    m_imgui_mtx.lock();
+    ImGui::SetCurrentContext(plugin_context);
+    return true;
+}
+
+void REFramework::restore_reframework_context() {
+    ImGui::SetCurrentContext(m_reframework_context);
+    m_imgui_mtx.unlock();
+}
+
+
 void REFramework::run_imgui_frame(bool from_present) {
     std::scoped_lock _{ m_imgui_mtx };
 
@@ -1246,6 +1259,8 @@ bool REFramework::initialize() {
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
+        //Store reference to imguicontext
+        m_reframework_context = ImGui::GetCurrentContext();
         ImNodes::SetImGuiContext(ImGui::GetCurrentContext());
         ImNodes::CreateContext();
 

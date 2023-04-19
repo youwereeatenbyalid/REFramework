@@ -69,6 +69,8 @@ REFrameworkPluginFunctions g_plugin_functions {
     reframework::is_drawing_ui,
     reframework_create_script_state, 
     reframework_destroy_script_state,
+    reframework_switch_imgui,
+    reframework_restore_imgui,
 };
 
 REFrameworkSDKFunctions g_sdk_functions {
@@ -835,6 +837,13 @@ void reframework_lock_lua() {
 
 void reframework_unlock_lua() {
     ScriptRunner::get()->unlock();
+}
+
+bool reframework_switch_imgui(ImGuiContext* plugin_context) {
+    return g_framework->switch_reframework_context(plugin_context);
+}
+void reframework_restore_imgui() {
+    g_framework->restore_reframework_context();
 }
 
 bool reframework_on_device_reset(REFOnDeviceResetCb cb) {

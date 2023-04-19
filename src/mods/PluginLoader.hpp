@@ -20,6 +20,9 @@ bool reframework_on_message(REFOnMessageCb cb);
 
 lua_State* reframework_create_script_state();
 void reframework_destroy_script_state(lua_State*);
+
+bool reframework_switch_imgui(ImGuiContext*);
+void reframework_restore_imgui();
 namespace reframework {
 extern REFrameworkRendererData g_renderer_data;
 }

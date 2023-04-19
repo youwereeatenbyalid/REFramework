@@ -58,6 +58,14 @@ public:
             API::s_instance->unlock_lua();
         }
     };
+    struct ImGuiLock {
+        ImGuiLock(ImGuiContext* plugin_context) {
+            API::s_instance->switch_imgui(plugin_context);
+        } 
+        virtual ~ImGuiLock(){
+            API::s_instance->restore_imgui();
+        }
+    };
 
 public:
     // ALWAYS call initialize first in reframework_plugin_initialize
@@ -123,6 +131,10 @@ public:
         m_param->functions->unlock_lua();
         m_lua_mtx.unlock();
     }
+
+    bool switch_imgui(ImGuiContext* plugin_context) { return m_param->functions->switch_imgui(plugin_context);}
+
+    void restore_imgui() { m_param->functions->restore_imgui(); }
 
     template <typename... Args> void log_error(const char* format, Args... args) { m_param->functions->log_error(format, args...); }
     template <typename... Args> void log_warn(const char* format, Args... args) { m_param->functions->log_warn(format, args...); }

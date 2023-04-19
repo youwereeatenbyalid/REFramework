@@ -27,6 +27,7 @@ lua_State* sandbox_stateview_1{nullptr};
 lua_State* sandbox_stateview_2{nullptr};
 bool sandbox_mod_enabled_1{nullptr};
 bool sandbox_mod_enabled_2{nullptr};
+bool forbidden_imgui_technique{nullptr};
 std::unordered_map<std::string, sol::load_result> g_loaded_snippets{};
 float royalguardguage = 5000.0;
 HWND g_wnd{};
@@ -133,6 +134,13 @@ void on_lua_state_destroyed(lua_State* l) {
     sandbox_lua_destroy_2();
 }
 
+void lua_imgui_hello_world(sol::state_view lua) {
+    //lock up the imgui mutex and rebind reframeworks imgui
+    API::ImGuiLock _(ImGui::GetCurrentContext());
+    //run script using imgui. on stateview
+    lua.safe_script("imgui.text('Hello World')");
+    //should restore original imgui state on scope destruction?
+}
 
 
 
@@ -239,6 +247,12 @@ void internal_frame() {
         ImGui::Text("Game Window Size from Lua: %f %f", window_width, window_height);
         ImGui::Text("Game Window Size from C++ Call: %f %f", size[0], size[1]);
         ImGui::Text("Game Window Size from C++ Invoke: %f %f", size_invoke[0], size_invoke[1]);
+
+        //forbidden technique
+        ImGui::Checkbox("Hello world but its in lua", &forbidden_imgui_technique);
+        if (forbidden_imgui_technique) {
+            lua_imgui_hello_world(lua);
+        }
 
         // Tests for the TDB
         const auto num_types = tdb->get_num_types();
